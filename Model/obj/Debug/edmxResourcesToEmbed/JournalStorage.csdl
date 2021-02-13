@@ -1,0 +1,233 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Discipline">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="Journals" Relationship="Self.FK_Journals_Disciplines" FromRole="Disciplines" ToRole="Journals" />
+    <NavigationProperty Name="Lessons" Relationship="Self.FK_Lessons_Disciplines" FromRole="Disciplines" ToRole="Lessons" />
+  </EntityType>
+  <EntityType Name="Grade">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Value" Type="Int32" Nullable="false" />
+    <Property Name="Comment" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="IdStudent" Type="Int32" Nullable="false" />
+    <Property Name="IdLesson" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Lessons" Relationship="Self.FK_Grades_Lessons" FromRole="Grades" ToRole="Lessons" />
+    <NavigationProperty Name="Students" Relationship="Self.FK_Grades_Students" FromRole="Grades" ToRole="Students" />
+  </EntityType>
+  <EntityType Name="Group">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="YearCreation" Type="DateTime" Nullable="false" Precision="0" />
+    <NavigationProperty Name="Journals" Relationship="Self.FK_Journals_Groups" FromRole="Groups" ToRole="Journals" />
+  </EntityType>
+  <EntityType Name="Journal">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="GroupId" Type="Int32" Nullable="false" />
+    <Property Name="MainTeacherId" Type="Int32" Nullable="false" />
+    <Property Name="DisciplineId" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Disciplines" Relationship="Self.FK_Journals_Disciplines" FromRole="Journals" ToRole="Disciplines" />
+    <NavigationProperty Name="Groups" Relationship="Self.FK_Journals_Groups" FromRole="Journals" ToRole="Groups" />
+    <NavigationProperty Name="Teachers" Relationship="Self.FK_Journals_Teachers" FromRole="Journals" ToRole="Teachers" />
+  </EntityType>
+  <EntityType Name="Lesson">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="IdDiscipline" Type="Int32" Nullable="false" />
+    <Property Name="IdTeacher" Type="Int32" Nullable="false" />
+    <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Topic" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
+    <NavigationProperty Name="Disciplines" Relationship="Self.FK_Lessons_Disciplines" FromRole="Lessons" ToRole="Disciplines" />
+    <NavigationProperty Name="Grades" Relationship="Self.FK_Grades_Lessons" FromRole="Lessons" ToRole="Grades" />
+    <NavigationProperty Name="Teachers" Relationship="Self.FK_Lessons_Teachers" FromRole="Lessons" ToRole="Teachers" />
+  </EntityType>
+  <EntityType Name="Student">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FIO" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="Grades" Relationship="Self.FK_Grades_Students" FromRole="Students" ToRole="Grades" />
+  </EntityType>
+  <EntityType Name="Teacher">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FIO" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="Journals" Relationship="Self.FK_Journals_Teachers" FromRole="Teachers" ToRole="Journals" />
+    <NavigationProperty Name="Lessons" Relationship="Self.FK_Lessons_Teachers" FromRole="Teachers" ToRole="Lessons" />
+  </EntityType>
+  <Association Name="FK_Journals_Disciplines">
+    <End Role="Disciplines" Type="Model.Discipline" Multiplicity="1" />
+    <End Role="Journals" Type="Model.Journal" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Disciplines">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Journals">
+        <PropertyRef Name="DisciplineId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Lessons_Disciplines">
+    <End Role="Disciplines" Type="Model.Discipline" Multiplicity="1" />
+    <End Role="Lessons" Type="Model.Lesson" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Disciplines">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Lessons">
+        <PropertyRef Name="IdDiscipline" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Grades_Lessons">
+    <End Role="Lessons" Type="Model.Lesson" Multiplicity="1" />
+    <End Role="Grades" Type="Model.Grade" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Lessons">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Grades">
+        <PropertyRef Name="IdLesson" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Grades_Students">
+    <End Role="Students" Type="Model.Student" Multiplicity="1" />
+    <End Role="Grades" Type="Model.Grade" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Students">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Grades">
+        <PropertyRef Name="IdStudent" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Journals_Groups">
+    <End Role="Groups" Type="Model.Group" Multiplicity="1" />
+    <End Role="Journals" Type="Model.Journal" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Groups">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Journals">
+        <PropertyRef Name="GroupId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Journals_Teachers">
+    <End Role="Teachers" Type="Model.Teacher" Multiplicity="1" />
+    <End Role="Journals" Type="Model.Journal" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Teachers">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Journals">
+        <PropertyRef Name="MainTeacherId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Lessons_Teachers">
+    <End Role="Teachers" Type="Model.Teacher" Multiplicity="1" />
+    <End Role="Lessons" Type="Model.Lesson" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Teachers">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Lessons">
+        <PropertyRef Name="IdTeacher" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="JournalStorage" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Disciplines1" EntityType="Model.Discipline" />
+    <EntitySet Name="Grades1" EntityType="Model.Grade" />
+    <EntitySet Name="Groups1" EntityType="Model.Group" />
+    <EntitySet Name="Journals1" EntityType="Model.Journal" />
+    <EntitySet Name="Lessons1" EntityType="Model.Lesson" />
+    <EntitySet Name="Students1" EntityType="Model.Student" />
+    <EntitySet Name="Teachers1" EntityType="Model.Teacher" />
+    <AssociationSet Name="FK_Journals_Disciplines" Association="Self.FK_Journals_Disciplines">
+      <End Role="Disciplines" EntitySet="Disciplines1" />
+      <End Role="Journals" EntitySet="Journals1" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Lessons_Disciplines" Association="Self.FK_Lessons_Disciplines">
+      <End Role="Disciplines" EntitySet="Disciplines1" />
+      <End Role="Lessons" EntitySet="Lessons1" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Grades_Lessons" Association="Self.FK_Grades_Lessons">
+      <End Role="Lessons" EntitySet="Lessons1" />
+      <End Role="Grades" EntitySet="Grades1" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Grades_Students" Association="Self.FK_Grades_Students">
+      <End Role="Students" EntitySet="Students1" />
+      <End Role="Grades" EntitySet="Grades1" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Journals_Groups" Association="Self.FK_Journals_Groups">
+      <End Role="Groups" EntitySet="Groups1" />
+      <End Role="Journals" EntitySet="Journals1" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Journals_Teachers" Association="Self.FK_Journals_Teachers">
+      <End Role="Teachers" EntitySet="Teachers1" />
+      <End Role="Journals" EntitySet="Journals1" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Lessons_Teachers" Association="Self.FK_Lessons_Teachers">
+      <End Role="Teachers" EntitySet="Teachers1" />
+      <End Role="Lessons" EntitySet="Lessons1" />
+    </AssociationSet>
+    <EntitySet Name="Roles" EntityType="Model.Role" />
+    <EntitySet Name="Users" EntityType="Model.User" />
+    <AssociationSet Name="FK_Users_Roles" Association="Model.FK_Users_Roles">
+      <End Role="Role" EntitySet="Roles" />
+      <End Role="User" EntitySet="Users" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Role">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Title" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Users" Relationship="Model.FK_Users_Roles" FromRole="Role" ToRole="User" />
+  </EntityType>
+  <EntityType Name="User">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Login" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="Password" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="IdRoles" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Role" Relationship="Model.FK_Users_Roles" FromRole="User" ToRole="Role" />
+  </EntityType>
+  <Association Name="FK_Users_Roles">
+    <End Type="Model.Role" Role="Role" Multiplicity="1" />
+    <End Type="Model.User" Role="User" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Role">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="User">
+        <PropertyRef Name="IdRoles" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>
